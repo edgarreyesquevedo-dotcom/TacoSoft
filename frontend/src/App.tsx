@@ -35,7 +35,12 @@ const catalogFields: Record<CatalogName, string[]> = {
   promociones: ['nombre', 'descripcion', 'porcentaje_descuento', 'fecha_inicio', 'fecha_fin', 'producto_ids', 'activo']
 };
 
-const orderStatus = ['pendiente', 'preparando', 'listo', 'entregado', 'cancelado'];
+const orderStatus: Order['estatus'][] = ['pendiente', 'preparando', 'listo', 'entregado', 'cancelado'];
+const nextOrderStatus: Partial<Record<Order['estatus'], Order['estatus']>> = {
+  pendiente: 'preparando',
+  preparando: 'listo',
+  listo: 'entregado'
+};
 
 function money(value: string | number | undefined) {
   return Number(value || 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
@@ -518,7 +523,7 @@ function PedidosPage() {
   }
 
   async function advance(order: Order) {
-    const next = { pendiente: 'preparando', preparando: 'listo', listo: 'entregado' }[order.estatus];
+    const next = nextOrderStatus[order.estatus];
     if (!next) return;
     await patchJson(`/pedidos/${order.id}/estatus`, { estatus: next });
     await load();
