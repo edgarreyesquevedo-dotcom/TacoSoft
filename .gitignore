@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.env
+.env.local
+.vercel/
+coverage/
+npm-debug.log*
+pnpm-lock.yaml
+yarn.lock
